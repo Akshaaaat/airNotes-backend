@@ -1,6 +1,6 @@
 const mongoose=require('mongoose');
 const { mongo } = require('mongoose');
-const mongoURI = "mongodb://localhost:27017";
+const mongoURI = "mongodb://localhost:27017/airnotes-backend";
 
 const connectToMongo = () =>{
     mongoose.connect(mongoURI, ()=>{
