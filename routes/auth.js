@@ -1,9 +1,11 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
 const { body, validationResult } = require("express-validator");
 const router = express.Router();
+
+const User = require("../models/User");
+const fetchuser = require('../middleware/fetchuser')
 
 const JWT_SECRET = "TechnicllyThisSHouldBeSecret";
 
@@ -16,6 +18,7 @@ router.post(
     body("pwd").isLength({ min: 5 }),
   ],
   async (req, res) => {
+    
     //If there are errors then return ERROR 400
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -98,6 +101,20 @@ router.post(
     catch (error) {
         console.error(error.message);
         return res.status(500).json({error:"Internal Server Error occured"});
+    }
+  }
+);
+
+//Get LoggedIn User's Details: POST '/api/auth/getuser'
+router.post('/getuser',fetchuser, async (req,res)=>{
+    try {
+      const userId=req.user.id;
+      const user = await User.findById(userId).select("-pwd")
+      res.send(user);
+    } 
+    catch (error) {
+      console.error(error.message);
+      return res.status(500).json({error:"Internal Server Error Occured"})  
     }
   }
 );
